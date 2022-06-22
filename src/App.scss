@@ -1,6 +1,5 @@
+// 解决移动端1px像素边框的问题
+@import '@scss/hairline.scss';
 .app {
   height: 100%;
-  span {
-    color: red;
-  }
 }
