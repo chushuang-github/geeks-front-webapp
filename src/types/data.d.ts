@@ -5,3 +5,9 @@ export type Token = {
   token: string
   refresh_token: string
 }
+
+// 定义一个提交表单的类型
+export type LoginForm = {
+  mobile: string
+  code: string
+}
