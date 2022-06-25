@@ -1,17 +1,24 @@
+import { useHistory } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import Icon from '@/components/Icon'
+import { getUser } from '@/store/actions/profile'
+import { useInitialState } from '@/hooks/use-initial-state'
 import styles from './index.module.scss'
 
 const Profile = () => {
+  const history = useHistory()
+  // 使用自定义hooks获取基本信息
+  const { user } = useInitialState(getUser, 'profile')
+
   return (
     <div className={styles.root}>
       <div className="profile">
         {/* 个人信息 */}
         <div className="user-info">
           <div className="avatar">
-            <img src="http://toutiao.itheima.net/images/user_head.jpg" alt="" />
+            <img src={user.photo} alt="" />
           </div>
-          <div className="user-name">沉默</div>
+          <div className="user-name">{user.name}</div>
           <Link to="/profile/edit">
             个人信息 <Icon type="iconbtn_right" />
           </Link>
@@ -28,19 +35,19 @@ const Profile = () => {
         {/* 动态 - 对应的这一行 */}
         <div className="count-list">
           <div className="count-item">
-            <p>100</p>
+            <p>{user.art_count}</p>
             <p>动态</p>
           </div>
           <div className="count-item">
-            <p>100</p>
+            <p>{user.follow_count}</p>
             <p>关注</p>
           </div>
           <div className="count-item">
-            <p>100</p>
+            <p>{user.fans_count}</p>
             <p>粉丝</p>
           </div>
           <div className="count-item">
-            <p>100</p>
+            <p>{user.like_count}</p>
             <p>被赞</p>
           </div>
         </div>
@@ -74,7 +81,7 @@ const Profile = () => {
             <Icon type="iconbtn_feedback" />
             <div>用户反馈</div>
           </div>
-          <div className="service-item">
+          <div className="service-item" onClick={() => history.push('/chat')}>
             <Icon type="iconbtn_xiaozhitongxue" />
             <div>小智同学</div>
           </div>

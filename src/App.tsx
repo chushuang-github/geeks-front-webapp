@@ -4,6 +4,7 @@ import { Router, Switch, Route, Redirect } from 'react-router-dom'
 import { customHistory } from '@/utils/history'
 import Layout from '@/pages/Layout'
 import Login from '@/pages/Login'
+import Edit from '@/pages/Profile/Edit'
 import './App.scss'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
           <Route exact path="/" render={() => <Redirect to="/home" />}></Route>
           <Route path="/home" component={Layout} />
           <Route path="/login" component={Login} />
+          <Route path="/profile/edit" component={Edit} />
         </Switch>
       </div>
     </Router>

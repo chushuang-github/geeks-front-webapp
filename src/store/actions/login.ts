@@ -4,6 +4,7 @@ import { setToken } from "@/utils/token"
 import type { RootThunkAction } from "@/types/store"
 import type { LoginForm, LoginResponse } from "@/types/data"
 
+// 登录请求
 export const login = (loginParams: LoginForm): RootThunkAction => {
   return async dispatch => {
     // 使用泛型进行指定返回值类型，因为我们axios响应拦截器已经结构了一层data数据了
