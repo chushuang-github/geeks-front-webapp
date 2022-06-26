@@ -5,6 +5,7 @@ import { customHistory } from '@/utils/history'
 import Layout from '@/pages/Layout'
 import Login from '@/pages/Login'
 import Edit from '@/pages/Profile/Edit'
+import AuthRoute from './components/AuthRoute'
 import './App.scss'
 
 function App() {
@@ -17,7 +18,10 @@ function App() {
           <Route exact path="/" render={() => <Redirect to="/home" />}></Route>
           <Route path="/home" component={Layout} />
           <Route path="/login" component={Login} />
-          <Route path="/profile/edit" component={Edit} />
+          {/* 使用路由鉴权组件 */}
+          <AuthRoute path="/profile/edit">
+            <Edit />
+          </AuthRoute>
         </Switch>
       </div>
     </Router>

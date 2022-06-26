@@ -10,6 +10,7 @@ import Home from '@/pages/Home'
 import Question from '@/pages/Question'
 import Video from '@/pages/Video'
 import Profile from '@/pages/Profile'
+import AuthRoute from '@/components/AuthRoute'
 
 const tabs = [
   { path: '/home/index', icon: 'iconbtn_home', text: '首页' },
@@ -31,7 +32,10 @@ const Layout = () => {
       <Route exact path="/home/index" component={Home} />
       <Route path="/home/question" component={Question} />
       <Route path="/home/video" component={Video} />
-      <Route path="/home/profile" component={Profile} />
+      {/* 使用路由鉴权组件 */}
+      <AuthRoute path="/home/profile">
+        <Profile />
+      </AuthRoute>
 
       <TabBar className="tab-bar" activeKey={location.pathname} onChange={changeRoute}>
         {tabs.map((item) => (

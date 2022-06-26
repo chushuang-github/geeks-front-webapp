@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Button, NavBar, Form, Input } from 'antd-mobile'
 import { useDispatch } from 'react-redux'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { Toast } from 'antd-mobile'
 import { login, sendCode } from '@/store/actions/login'
 import type { LoginForm } from '@/types/data'
@@ -14,6 +14,7 @@ const Login = () => {
   const [timeLeft, setTimeLeft] = useState<number>(0) // 验证码的剩余时间
   const dispatch = useDispatch()
   const history = useHistory()
+  const location = useLocation<{ from: string } | undefined>()
   const [form] = Form.useForm()
   const mobileRef = useRef<InputRef>(null)
   // 函数重新执行，使用useRef可以去记录定时器标识(记录前一次的状态都用useRef)
@@ -47,7 +48,7 @@ const Login = () => {
         duration: 500,
         afterClose: () => {
           // 返回首页
-          history.replace('/home')
+          history.replace(location.state?.from || '/home/index')
         },
       })
     } catch (error) {
