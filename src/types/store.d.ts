@@ -14,10 +14,14 @@ export type RootState = ReturnType<typeof store.getState>
 export type RootThunkAction = ThunkAction<void, RootState, unknown, RootAction>
 
 // 定义登录的action
-export type LoginAction = {
-  type: 'login/token' // 字母量类型，固定的值
-  payload: Token
-}
+export type LoginAction =
+  | {
+      type: 'login/token' // 字母量类型，固定的值
+      payload: Token
+    }
+  | {
+      type: 'login/logout'
+    }
 
 // 定义获取个人信息的action
 export type UserAction =
@@ -28,4 +32,8 @@ export type UserAction =
   | {
       type: 'user/getprofile'
       payload: UserProfile
+    }
+  | {
+      type: 'user/update'
+      payload: Partial<UserProfile>
     }
