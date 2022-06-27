@@ -1,10 +1,10 @@
 // store.d.ts：用来存放跟 Redux 相关类型，比如 action 的类型等
 import store from '@/store'
 import { ThunkAction } from 'redux-thunk'
-import type { Token, User, UserProfile } from './data'
+import type { Token, User, UserProfile, Channel, Articles } from './data'
 
 // redux总的action类型 (所有action类型的集合 - 联合类型)
-export type RootAction = LoginAction | UserAction
+export type RootAction = LoginAction | UserAction | HomeAction
 
 // redux总的state的类型，useSelector需要指定状态的类型
 export type RootState = ReturnType<typeof store.getState>
@@ -36,4 +36,19 @@ export type UserAction =
   | {
       type: 'user/update'
       payload: Partial<UserProfile>
+    }
+
+// 主页action
+export type HomeAction =
+  | {
+      type: 'home/getuserchannel'
+      payload: Channel[]
+    }
+  | {
+      type: 'home/getchannelarticles'
+      payload: {
+        channel_id: number
+        data: Articles
+        actionType: 'append' | 'replace'
+      }
     }

@@ -46,3 +46,34 @@ export type UserProfile = {
 }
 // 详细个人资料接口返回的数据类型
 export type UserProfileResponse = ApiResponse<UserProfile>
+
+// 频道列表数据结构
+export type Channel = {
+  id: number
+  name: string
+}
+// 频道列表存储结构
+export type UserChannel = {
+  channels: Array<Channel>
+}
+// 频道列表接口返回的数据类型
+export type UserChannelResponse = ApiResponse<UserChannel>
+
+// 文章列表的数据结构
+export type Articles = {
+  pre_timestamp: string
+  results: {
+    art_id: string
+    title: string
+    aut_id: string
+    aut_name: string
+    comm_count: number
+    pubdate: string
+    cover: {
+      type: number
+      images: string[]
+    }
+  }[]
+}
+// 文章列表接口返回的数据类型
+export type ArticlesResponse = ApiResponse<Articles>

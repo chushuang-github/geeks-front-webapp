@@ -15,7 +15,7 @@ function App() {
     <Router history={customHistory}>
       <div className="app">
         <Switch>
-          <Route exact path="/" render={() => <Redirect to="/home" />}></Route>
+          <Route exact path="/" render={() => <Redirect to="/home/index" />}></Route>
           <Route path="/home" component={Layout} />
           <Route path="/login" component={Login} />
           {/* 使用路由鉴权组件 */}
