@@ -88,8 +88,11 @@ export type ArticleInfo = {
   aut_photo: string
   is_followed: boolean
   attitude: number // 用户对文章的态度 -1: 无态度，0-不喜欢，1-点赞
-  content: number
+  content: string
   is_collected: boolean
+  read_count: number // 阅读数量
+  like_count: number // 点赞数量
+  comm_count: number // 评论数量
 }
 // 文章详情接口返回的数据类型
 export type ArticleInfoResponse = ApiResponse<ArticleInfo>

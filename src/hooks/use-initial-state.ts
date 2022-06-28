@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { RootState } from '@/types/store'
 
@@ -17,9 +17,10 @@ export const useInitialState = <StateName extends keyof RootState>(
   //   state => state[stateName]
   // )
 
+  const actionRef = useRef(action)
   useEffect(() => {
-    dispatch(action())
-  }, [dispatch, action])
+    dispatch(actionRef.current())
+  }, [dispatch])
 
   return state
 }
