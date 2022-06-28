@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import ArticleItem from '@/components/ArticleItem'
 import { InfiniteScroll, PullToRefresh } from 'antd-mobile'
 import { getArticleList } from '@/store/actions/home'
-import { RootState } from '@/types/store'
+import type { RootState } from '@/types/store'
 import styles from './index.module.scss'
 
 type Props = {
@@ -36,7 +36,12 @@ const ArticleList = ({ channelId }: Props) => {
         <div className="article-item">
           {results.length > 0 &&
             results.map((item) => {
-              return <ArticleItem key={item.art_id} {...item} />
+              return (
+                <ArticleItem
+                  key={item.art_id}
+                  {...item}
+                />
+              )
             })}
         </div>
         <InfiniteScroll loadMore={loadMore} hasMore={hasMore} />

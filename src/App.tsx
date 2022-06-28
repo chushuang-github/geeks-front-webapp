@@ -5,6 +5,7 @@ import { customHistory } from '@/utils/history'
 import Layout from '@/pages/Layout'
 import Login from '@/pages/Login'
 import Edit from '@/pages/Profile/Edit'
+import Article from './pages/Article'
 import AuthRoute from './components/AuthRoute'
 import './App.scss'
 
@@ -18,6 +19,7 @@ function App() {
           <Route exact path="/" render={() => <Redirect to="/home/index" />}></Route>
           <Route path="/home" component={Layout} />
           <Route path="/login" component={Login} />
+          <Route path="/article/:articleId" component={Article} />
           {/* 使用路由鉴权组件 */}
           <AuthRoute path="/profile/edit">
             <Edit />
