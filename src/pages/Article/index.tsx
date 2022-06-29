@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { getArticle } from '@/store/actions/article'
+import { getArticle, getComments } from '@/store/actions/article'
 import { useInitialState } from '@/hooks/use-initial-state'
 import { NavBar, InfiniteScroll } from 'antd-mobile'
 import Icon from '@/components/Icon'
 import CommentItem from './components/CommentItem'
 import CommentFooter from './components/CommentFooter'
+import NoneComment from '@/components/NoneComment'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
 // 导入本地化格式插件
@@ -28,11 +29,24 @@ hljs.configure({
   ignoreUnescapedHTML: true,
 })
 
+// 评论的类型
+// 评论类型，a-对文章(article)的评论，c-对评论(comment)的回复
+enum CommentType {
+  Article = 'a',
+  Comment = 'c',
+}
+
 const Article = () => {
   const history = useHistory()
   const params = useParams<{ articleId: string }>()
+  // 自定义hook获取文章详情
   const { detail } = useInitialState(
     () => getArticle(params.articleId),
+    'article'
+  )
+  // 自定义hook获取评论列表
+  const { comment } = useInitialState(
+    () => getComments(CommentType.Article, params.articleId, null, 'replace'),
     'article'
   )
 
@@ -146,17 +160,24 @@ const Article = () => {
             <span>{like_count} 点赞</span>
           </div>
 
-          <div className="comment-list">
-            <CommentItem />
+          {/* 文章评论列表 */}
+          {comment.results.length > 0 ? (
+            <div className="comment-list">
+              {comment.results.map((item) => (
+                <CommentItem key={item.com_id} {...item} />
+              ))}
 
-            <InfiniteScroll hasMore={false} loadMore={loadMoreComments} />
-          </div>
+              <InfiniteScroll hasMore={false} loadMore={loadMoreComments} />
+            </div>
+          ) : (
+            <NoneComment />
+          )}
         </div>
       </div>
     )
   }
 
-  if(!detail.art_id) {
+  if (!detail.art_id) {
     // 如果没有文章id，表示数据还没加载出来，就显示骨架屏组件
     return showLoader()
   }

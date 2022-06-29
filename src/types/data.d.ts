@@ -96,3 +96,25 @@ export type ArticleInfo = {
 }
 // 文章详情接口返回的数据类型
 export type ArticleInfoResponse = ApiResponse<ArticleInfo>
+
+// 文章评论、对评论的评论数据结构
+export type ArtComment = {
+  com_id: string
+  aut_id: string
+  aut_name: string
+  aut_photo: string
+  like_count: number
+  reply_count: number
+  pubdate: string
+  content: string
+  is_liking: boolean
+  is_followed: boolean
+}
+// 文章评论的类型
+export type ArticleComment = {
+  total_count: number
+  end_id: string | null // 所有评论或回复的最后一个id
+  last_id: string | null // 当前返回评论数据的最后一个id
+  results: ArtComment[]
+}
+export type ArticleCommentResponse = ApiResponse<ArticleComment>

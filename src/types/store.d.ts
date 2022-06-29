@@ -1,7 +1,15 @@
 // store.d.ts：用来存放跟 Redux 相关类型，比如 action 的类型等
 import store from '@/store'
 import { ThunkAction } from 'redux-thunk'
-import type { Token, User, UserProfile, Channel, Articles, ArticleInfo } from './data'
+import type {
+  Token,
+  User,
+  UserProfile,
+  Channel,
+  Articles,
+  ArticleInfo,
+  ArticleComment,
+} from './data'
 
 // redux总的action类型 (所有action类型的集合 - 联合类型)
 export type RootAction = LoginAction | UserAction | HomeAction | ArticleAction
@@ -54,7 +62,12 @@ export type HomeAction =
     }
 
 // 文章详情action
-export type ArticleAction = {
-  type: 'article/get'
-  payload: ArticleInfo
-}
+export type ArticleAction =
+  | {
+      type: 'article/get'
+      payload: ArticleInfo
+    }
+  | {
+      type: 'article/getarticlecomments'
+      payload: ArticleComment & { actionType: 'replace' | 'append' }
+    }
