@@ -1,11 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { getArticle, getComments } from '@/store/actions/article'
+import { useDispatch } from 'react-redux'
+import { getArticle, getComments, addArticleComment } from '@/store/actions/article'
 import { useInitialState } from '@/hooks/use-initial-state'
-import { NavBar, InfiniteScroll } from 'antd-mobile'
+import { NavBar, InfiniteScroll, Popup } from 'antd-mobile'
 import Icon from '@/components/Icon'
 import CommentItem from './components/CommentItem'
 import CommentFooter from './components/CommentFooter'
+import CommentInput from './components/CommentInput'
 import NoneComment from '@/components/NoneComment'
 import classNames from 'classnames'
 import dayjs from 'dayjs'
@@ -37,8 +39,14 @@ enum CommentType {
 }
 
 const Article = () => {
+  const [commentVisible, setCommentVisible] = useState(false) // 发表评论的弹出层
+  const [showComment, setShowComment] = useState(false) // 是否显示评论区内容
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const commentRef = useRef<HTMLDivElement>(null)
   const history = useHistory()
   const params = useParams<{ articleId: string }>()
+  const dispatch = useDispatch()
+
   // 自定义hook获取文章详情
   const { detail } = useInitialState(
     () => getArticle(params.articleId),
@@ -82,29 +90,24 @@ const Article = () => {
     console.log('加载更多评论')
   }
 
-  // 骨架屏
-  const showLoader = () => (
-    <ContentLoader
-      speed={2}
-      width={375}
-      height={230}
-      viewBox="0 0 375 230"
-      backgroundColor="#f3f3f3"
-      foregroundColor="#ecebeb"
-    >
-      <rect x="16" y="8" rx="3" ry="3" width="340" height="10" />
-      <rect x="16" y="26" rx="0" ry="0" width="70" height="6" />
-      <rect x="96" y="26" rx="0" ry="0" width="50" height="6" />
-      <rect x="156" y="26" rx="0" ry="0" width="50" height="6" />
-      <circle cx="33" cy="69" r="17" />
-      <rect x="60" y="65" rx="0" ry="0" width="45" height="6" />
-      <rect x="304" y="65" rx="0" ry="0" width="52" height="6" />
-      <rect x="16" y="114" rx="0" ry="0" width="340" height="15" />
-      <rect x="263" y="208" rx="0" ry="0" width="94" height="19" />
-      <rect x="16" y="141" rx="0" ry="0" width="340" height="15" />
-      <rect x="16" y="166" rx="0" ry="0" width="340" height="15" />
-    </ContentLoader>
-  )
+  // 点击评论，页面滚动到评论的位置
+  const onScrollTop = () => {
+    if (showComment) {
+      // 当前是显示评论的，需要回到顶部
+      wrapperRef.current?.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      // 当前不显示评论，需要显示评论
+      commentRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
+    setShowComment(!showComment)
+  }
+
+  // 发表评论
+  const onAddComment = async (content: string) => {
+    await dispatch(addArticleComment(params.articleId, content))
+    setCommentVisible(false)
+    commentRef.current?.scrollIntoView()
+  }
 
   const {
     title,
@@ -122,7 +125,7 @@ const Article = () => {
     // 文章详情
     return (
       <div className="wrapper">
-        <div className="article-wrapper">
+        <div className="article-wrapper" ref={wrapperRef}>
           <div className="header">
             <h1 className="title">{title}</h1>
 
@@ -154,7 +157,7 @@ const Article = () => {
           </div>
         </div>
 
-        <div className="comment">
+        <div className="comment" ref={commentRef}>
           <div className="comment-header">
             <span>全部评论（{comm_count}）</span>
             <span>{like_count} 点赞</span>
@@ -176,6 +179,41 @@ const Article = () => {
       </div>
     )
   }
+
+  // 评论弹出层
+  const renderComment = () => (
+    <Popup
+      visible={commentVisible}
+      bodyStyle={{ height: '100vh' }}
+      destroyOnClose
+    >
+      <CommentInput onClose={() => setCommentVisible(false)} onAddComment={onAddComment} />
+    </Popup>
+  )
+
+  // 骨架屏
+  const showLoader = () => (
+    <ContentLoader
+      speed={2}
+      width={375}
+      height={230}
+      viewBox="0 0 375 230"
+      backgroundColor="#f3f3f3"
+      foregroundColor="#ecebeb"
+    >
+      <rect x="16" y="8" rx="3" ry="3" width="340" height="10" />
+      <rect x="16" y="26" rx="0" ry="0" width="70" height="6" />
+      <rect x="96" y="26" rx="0" ry="0" width="50" height="6" />
+      <rect x="156" y="26" rx="0" ry="0" width="50" height="6" />
+      <circle cx="33" cy="69" r="17" />
+      <rect x="60" y="65" rx="0" ry="0" width="45" height="6" />
+      <rect x="304" y="65" rx="0" ry="0" width="52" height="6" />
+      <rect x="16" y="114" rx="0" ry="0" width="340" height="15" />
+      <rect x="263" y="208" rx="0" ry="0" width="94" height="19" />
+      <rect x="16" y="141" rx="0" ry="0" width="340" height="15" />
+      <rect x="16" y="166" rx="0" ry="0" width="340" height="15" />
+    </ContentLoader>
+  )
 
   if (!detail.art_id) {
     // 如果没有文章id，表示数据还没加载出来，就显示骨架屏组件
@@ -208,8 +246,14 @@ const Article = () => {
         {/* 文章详情和评论 */}
         {renderArticle()}
 
+        {/* 发布评论弹出层 */}
+        {renderComment()}
+
         {/* 底部评论栏 */}
-        <CommentFooter />
+        <CommentFooter
+          onCommentPopup={() => setCommentVisible(true)}
+          onScrollTop={onScrollTop}
+        />
       </div>
     </div>
   )

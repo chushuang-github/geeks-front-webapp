@@ -118,3 +118,13 @@ export type ArticleComment = {
   results: ArtComment[]
 }
 export type ArticleCommentResponse = ApiResponse<ArticleComment>
+
+// 添加评论
+// ├─ com_id	string	必须		新建的评论id		
+// ├─ target	string	必须		评论所属的目标id		
+export type AddArticleComponent = {
+  com_id: string
+  target: string
+  new_obj: ArtComment
+}
+export type AddArticleComponentResponse = ApiResponse<AddArticleComponent>

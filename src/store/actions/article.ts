@@ -1,6 +1,6 @@
 import { http } from '@/utils/http'
 import type { RootThunkAction } from '@/types/store'
-import type { ArticleInfoResponse, ArticleCommentResponse } from '@/types/data'
+import type { ArticleInfoResponse, ArticleCommentResponse, AddArticleComponentResponse } from '@/types/data'
 
 // 获取文章详情
 export const getArticle = (articleId: string): RootThunkAction => {
@@ -33,6 +33,27 @@ export const getComments = (
     dispatch({
       type: 'article/getarticlecomments',
       payload: { ...res.data, actionType },
+    })
+  }
+}
+
+// 发表评论
+// target：评论的目标id（评论文章即为文章id，对评论进行回复则为评论id）
+// content：评论的内容
+// artId：文章id，对评论内容发表回复时，需要传递此参数，表明所属文章id。对文章进行评论，不要传此参数。
+export const addArticleComment = (
+  target: string,
+  content: string,
+  artId?: string
+): RootThunkAction => {
+  return async (dispatch) => {
+    const res = await http.post('/comments', {
+      target,
+      content,
+    }) as AddArticleComponentResponse
+    dispatch({
+      type: 'article/addarticlecomment',
+      payload: res.data.new_obj
     })
   }
 }

@@ -9,6 +9,7 @@ import type {
   Articles,
   ArticleInfo,
   ArticleComment,
+  ArtComment,
 } from './data'
 
 // redux总的action类型 (所有action类型的集合 - 联合类型)
@@ -70,4 +71,8 @@ export type ArticleAction =
   | {
       type: 'article/getarticlecomments'
       payload: ArticleComment & { actionType: 'replace' | 'append' }
+    }
+  | {
+      type: 'article/addarticlecomment'
+      payload: ArtComment
     }

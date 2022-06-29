@@ -1,23 +1,25 @@
-import Icon from '@/components/Icon';
-import styles from './index.module.scss';
+import Icon from '@/components/Icon'
+import styles from './index.module.scss'
 
 type Props = {
   // normal 普通评论
   // reply 回复评论
-  type?: 'normal' | 'reply';
-};
+  type?: 'normal' | 'reply'
+  onCommentPopup: () => void
+  onScrollTop: () => void
+}
 
-const CommentFooter = ({ type = 'normal' }: Props) => {
+const CommentFooter = ({ type = 'normal', onCommentPopup, onScrollTop }: Props) => {
   return (
     <div className={styles.root}>
-      <div className="input-btn">
+      <div className="input-btn" onClick={onCommentPopup}>
         <Icon type="iconbianji" />
         <span>抢沙发</span>
       </div>
 
       {type === 'normal' && (
         <>
-          <div className="action-item">
+          <div className="action-item" onClick={onScrollTop}>
             <Icon type="iconbtn_comment" />
             <p>评论</p>
             {!!1 && <span className="bage">{1}</span>}
@@ -45,7 +47,7 @@ const CommentFooter = ({ type = 'normal' }: Props) => {
         <p>分享</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CommentFooter;
+export default CommentFooter

@@ -39,6 +39,15 @@ export const article = (
               : [...results],
         },
       }
+    case 'article/addarticlecomment':
+      return {
+        ...state,
+        comment: {
+          ...state.comment,
+          total_count: state.comment.total_count + 1,
+          results: [action.payload, ...state.comment.results],
+        },
+      }
     default:
       return state
   }
