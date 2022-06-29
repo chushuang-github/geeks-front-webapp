@@ -27,7 +27,10 @@ const CommentInput = ({ onClose, onAddComment, name }: Props) => {
       <NavBar
         onBack={onClose}
         right={
-          <span className="publish" onClick={() => onAddComment(value)}>
+          <span
+            className="publish"
+            onClick={!!value ? () => onAddComment(value) : undefined}
+          >
             发表
           </span>
         }

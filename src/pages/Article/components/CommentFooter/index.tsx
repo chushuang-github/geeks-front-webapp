@@ -1,4 +1,5 @@
 import Icon from '@/components/Icon'
+import type { ArticleInfo } from '@/types/data'
 import styles from './index.module.scss'
 
 type Props = {
@@ -7,9 +8,16 @@ type Props = {
   type?: 'normal' | 'reply'
   onCommentPopup: () => void
   onScrollTop: () => void
-}
+} & Partial<ArticleInfo>
 
-const CommentFooter = ({ type = 'normal', onCommentPopup, onScrollTop }: Props) => {
+const CommentFooter = ({
+  type = 'normal',
+  comm_count,
+  attitude,
+  is_collected,
+  onCommentPopup,
+  onScrollTop,
+}: Props) => {
   return (
     <div className={styles.root}>
       <div className="input-btn" onClick={onCommentPopup}>
@@ -22,14 +30,18 @@ const CommentFooter = ({ type = 'normal', onCommentPopup, onScrollTop }: Props) 
           <div className="action-item" onClick={onScrollTop}>
             <Icon type="iconbtn_comment" />
             <p>评论</p>
-            {!!1 && <span className="bage">{1}</span>}
+            {!!comm_count && <span className="bage">{comm_count}</span>}
           </div>
           <div className="action-item">
-            <Icon type={true ? 'iconbtn_like_sel' : 'iconbtn_like2'} />
+            <Icon
+              type={attitude === 1 ? 'iconbtn_like_sel' : 'iconbtn_like2'}
+            />
             <p>点赞</p>
           </div>
           <div className="action-item">
-            <Icon type={true ? 'iconbtn_collect_sel' : 'iconbtn_collect'} />
+            <Icon
+              type={is_collected ? 'iconbtn_collect_sel' : 'iconbtn_collect'}
+            />
             <p>收藏</p>
           </div>
         </>

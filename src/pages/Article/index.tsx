@@ -1,9 +1,15 @@
 import { useEffect, useState, useRef } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { getArticle, getComments, addArticleComment } from '@/store/actions/article'
+import {
+  getArticle,
+  getComments,
+  addArticleComment,
+} from '@/store/actions/article'
 import { useInitialState } from '@/hooks/use-initial-state'
-import { NavBar, InfiniteScroll, Popup } from 'antd-mobile'
+import { useAuthSet } from '@/hooks/use-auth-set'
+import { useResetRedux } from '@/hooks/use-reset-redux'
+import { NavBar, InfiniteScroll, Popup, Toast } from 'antd-mobile'
 import Icon from '@/components/Icon'
 import CommentItem from './components/CommentItem'
 import CommentFooter from './components/CommentFooter'
@@ -46,6 +52,10 @@ const Article = () => {
   const history = useHistory()
   const params = useParams<{ articleId: string }>()
   const dispatch = useDispatch()
+  // 权限验证，是否登录
+  const { isAuth, start } = useAuthSet()
+  // 退出文章详情页，进行redux数据清理
+  useResetRedux('article')
 
   // 自定义hook获取文章详情
   const { detail } = useInitialState(
@@ -86,10 +96,6 @@ const Article = () => {
     }
   }, [detail])
 
-  const loadMoreComments = async () => {
-    console.log('加载更多评论')
-  }
-
   // 点击评论，页面滚动到评论的位置
   const onScrollTop = () => {
     if (showComment) {
@@ -107,6 +113,22 @@ const Article = () => {
     await dispatch(addArticleComment(params.articleId, content))
     setCommentVisible(false)
     commentRef.current?.scrollIntoView()
+    Toast.show({
+      content: '评论成功',
+      duration: 1000,
+    })
+  }
+
+  // 加载更多评论
+  const loadMoreComments = async () => {
+    await dispatch(
+      getComments(
+        CommentType.Article,
+        params.articleId,
+        comment.last_id,
+        'append'
+      )
+    )
   }
 
   const {
@@ -170,7 +192,10 @@ const Article = () => {
                 <CommentItem key={item.com_id} {...item} />
               ))}
 
-              <InfiniteScroll hasMore={false} loadMore={loadMoreComments} />
+              <InfiniteScroll
+                hasMore={comment.last_id !== comment.end_id}
+                loadMore={loadMoreComments}
+              />
             </div>
           ) : (
             <NoneComment />
@@ -187,7 +212,10 @@ const Article = () => {
       bodyStyle={{ height: '100vh' }}
       destroyOnClose
     >
-      <CommentInput onClose={() => setCommentVisible(false)} onAddComment={onAddComment} />
+      <CommentInput
+        onClose={() => setCommentVisible(false)}
+        onAddComment={onAddComment}
+      />
     </Popup>
   )
 
@@ -251,8 +279,9 @@ const Article = () => {
 
         {/* 底部评论栏 */}
         <CommentFooter
-          onCommentPopup={() => setCommentVisible(true)}
+          onCommentPopup={() => (isAuth ? setCommentVisible(true) : start())}
           onScrollTop={onScrollTop}
+          {...detail}
         />
       </div>
     </div>

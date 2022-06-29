@@ -1,5 +1,5 @@
 import type { ArticleInfo, ArticleComment } from '@/types/data'
-import type { ArticleAction } from '@/types/store'
+import type { ArticleAction, ResetAction } from '@/types/store'
 
 type ArticleState = {
   detail: ArticleInfo // 文章详情
@@ -14,7 +14,7 @@ const initialState = {
 
 export const article = (
   state = initialState,
-  action: ArticleAction
+  action: ArticleAction | ResetAction
 ): ArticleState => {
   switch (action.type) {
     case 'article/get':
@@ -42,12 +42,21 @@ export const article = (
     case 'article/addarticlecomment':
       return {
         ...state,
+        detail: {
+          ...state.detail,
+          comm_count: state.detail.comm_count + 1,
+        },
         comment: {
           ...state.comment,
           total_count: state.comment.total_count + 1,
           results: [action.payload, ...state.comment.results],
         },
       }
+    case 'reset':
+      if (action.payload === 'article') {
+        return initialState
+      }
+      return state
     default:
       return state
   }

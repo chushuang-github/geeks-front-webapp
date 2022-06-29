@@ -13,7 +13,12 @@ import type {
 } from './data'
 
 // redux总的action类型 (所有action类型的集合 - 联合类型)
-export type RootAction = LoginAction | UserAction | HomeAction | ArticleAction
+export type RootAction =
+  | LoginAction
+  | UserAction
+  | HomeAction
+  | ArticleAction
+  | ResetAction
 
 // redux总的state的类型，useSelector需要指定状态的类型
 export type RootState = ReturnType<typeof store.getState>
@@ -76,3 +81,9 @@ export type ArticleAction =
       type: 'article/addarticlecomment'
       payload: ArtComment
     }
+
+// 清空指定的reducer函数 redux state数据
+export type ResetAction = {
+  type: 'reset'
+  payload: keyof RootState
+}
