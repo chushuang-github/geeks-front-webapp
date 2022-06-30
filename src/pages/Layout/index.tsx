@@ -1,6 +1,7 @@
 import { Route } from 'react-router-dom'
 import { TabBar } from 'antd-mobile'
 import { useHistory, useLocation } from 'react-router-dom'
+import { KeepAlive } from '@/components/KeepAlive'
 import styles from './index.module.scss'
 
 import Icon from '@/components/Icon'
@@ -29,7 +30,9 @@ const Layout = () => {
   return (
     <div className={styles.root}>
       {/* 二级嵌套路由 */}
-      <Route exact path="/home/index" component={Home} />
+      <KeepAlive exact path="/home/index">
+        <Home />
+      </KeepAlive>
       <Route path="/home/question" component={Question} />
       <Route path="/home/video" component={Video} />
       {/* 使用路由鉴权组件 */}
